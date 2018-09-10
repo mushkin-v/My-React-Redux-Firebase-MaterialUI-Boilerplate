@@ -7,10 +7,14 @@ import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
 
 const styles = theme => ({
 	layout: {
@@ -54,6 +58,8 @@ const updateByPropertyName = (propertyName, value) => () => ({
 const INITIAL_STATE = {
 	passwordOne: "",
 	passwordTwo: "",
+	showPasswordOne: false,
+	showPasswordTwo: false,
 	error: null
 };
 
@@ -63,6 +69,18 @@ class PasswordChangeForm extends Component {
 
 		this.state = { ...INITIAL_STATE };
 	}
+
+	handleMouseDownPassword = event => {
+		event.preventDefault();
+	};
+
+	handleClickShowPasswordOne = () => {
+		this.setState(state => ({ showPasswordOne: !state.showPasswordOne }));
+	};
+
+	handleClickShowPasswordTwo = () => {
+		this.setState(state => ({ showPasswordTwo: !state.showPasswordTwo }));
+	};
 
 	onSubmit = event => {
 		const { passwordOne } = this.state;
@@ -80,7 +98,13 @@ class PasswordChangeForm extends Component {
 	};
 
 	render() {
-		const { passwordOne, passwordTwo, error } = this.state;
+		const {
+			passwordOne,
+			passwordTwo,
+			error,
+			showPasswordOne,
+			showPasswordTwo
+		} = this.state;
 		const { classes, email } = this.props;
 		const isInvalid = passwordOne !== passwordTwo || passwordOne === "";
 
@@ -97,7 +121,7 @@ class PasswordChangeForm extends Component {
 								<InputLabel htmlFor="passwordOne">New Password</InputLabel>
 								<Input
 									id="passwordOne"
-									type="password"
+									type={showPasswordOne ? "text" : "password"}
 									name="passwordOne"
 									autoComplete="current-password"
 									autoFocus
@@ -107,6 +131,21 @@ class PasswordChangeForm extends Component {
 											updateByPropertyName("passwordOne", event.target.value)
 										)
 									}
+									endAdornment={
+										<InputAdornment position="end">
+											<IconButton
+												aria-label="Toggle password visibility"
+												onClick={this.handleClickShowPasswordOne}
+												onMouseDown={this.handleMouseDownPassword}
+											>
+												{this.state.showPasswordOne ? (
+													<VisibilityOff />
+												) : (
+													<Visibility />
+												)}
+											</IconButton>
+										</InputAdornment>
+									}
 								/>
 							</FormControl>
 							<FormControl margin="normal" required fullWidth>
@@ -115,7 +154,7 @@ class PasswordChangeForm extends Component {
 								</InputLabel>
 								<Input
 									name="passwordTwo"
-									type="password"
+									type={showPasswordTwo ? "text" : "password"}
 									id="passwordTwo"
 									autoComplete="current-password"
 									value={passwordTwo}
@@ -123,6 +162,21 @@ class PasswordChangeForm extends Component {
 										this.setState(
 											updateByPropertyName("passwordTwo", event.target.value)
 										)
+									}
+									endAdornment={
+										<InputAdornment position="end">
+											<IconButton
+												aria-label="Toggle password visibility"
+												onClick={this.handleClickShowPasswordTwo}
+												onMouseDown={this.handleMouseDownPassword}
+											>
+												{this.state.showPasswordTwo ? (
+													<VisibilityOff />
+												) : (
+													<Visibility />
+												)}
+											</IconButton>
+										</InputAdornment>
 									}
 								/>
 							</FormControl>
